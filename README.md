@@ -1,36 +1,33 @@
 # Datamill::Extra
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/datamill/extra`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem contains things related to the datamill gem which have not proven to be
+useful or stable enough to go into the main gem.
 
-TODO: Delete this and the text above, and describe your gem
+## Cell cultures and cell runs
 
-## Installation
+Recall these datamill concepts first:
 
-Add this line to your application's Gemfile:
+A "behaviour" is an implementation of how cells of a certain kind need to be
+operated. For Datamill, a Behaviour is just an object that implements the
+`Datamill::Cell::Behaviour` interface.
 
-```ruby
-gem 'datamill-extra'
-```
+Behaviours implement functions managing the cell's `State`, which
+encapsulates all the state of and information about the cell, and contains no behaviour
+of itself. The behaviour functions themselves are stateless.
 
-And then execute:
+This is a rather functional approach and not always nice to operate with.
+To give this a more object-oriented flavour,
+you can implement a *cell culture* using `Datamill::Extra::CellCulture`.
 
-    $ bundle
+A cell culture provides the behaviour object, the interface toward the reactor, for
+you. Inside the cell culture you describe what a *cell run* looks like,
+a class instantiated by the behaviour to handle a single invocation
+for the cell. On this cell run you can implement general handling
+around all method calls (like logging, exception handling,
+presenting a cell's id in a more suitable way...) as well as respond
+to cell messages.
 
-Or install it yourself as:
+## Model events
 
-    $ gem install datamill-extra
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/datamill-extra.
-
+Model events allow for hooking into the lifecycle events of classic ORMs
+to emit Events. These events are managed by corresponding `Datamill::Event` subclasses.
